@@ -21,13 +21,13 @@ const Weather = () => {
       } catch (error) {
         console.error('Error fetching weather data:', error);
       } finally {
-        setIsLoading(false); // Set isLoading to false whether data is fetched successfully or not
+        setIsLoading(false);
       }
     };
 
     fetchData().catch((error) => {
       console.error('Error in fetchData: ', error);
-      setIsLoading(false); // Set isLoading to false in case of an error
+      setIsLoading(false);
     });
   }, [API_KEY]);
 
@@ -35,7 +35,6 @@ const Weather = () => {
     return <div>Loading...</div>;
   }
 
-  // Render the content when weatherData is available
   return (
     <div
       style={{
