@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 const Weather = () => {
   const [weatherData, setWeatherData] = useState({});
-  const [isLoading, setIsLoading] = useState(true); // Add a loading state
+  const [isLoading, setIsLoading] = useState(true);
   const API_KEY = process.env.REACT_APP_API_KEY;
 
   useEffect(() => {
@@ -47,8 +47,8 @@ const Weather = () => {
     >
       <div>
         <h2>{weatherData.name}</h2>
-        <p>Temperature: {Math.round(weatherData.main?.temp)}°C</p>
-        <p>Description: {weatherData.weather?.[0]?.description}</p>
+        <p>Temperature: {Math.round(weatherData.main.temp)}°C</p>
+        <p>Description: {weatherData.weather[0].description}</p>
       </div>
     </div>
   );
