@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 const Weather = () => {
   const [weatherData, setWeatherData] = useState(null);
-  const API_KEY = process.env.API_Key;
+  const API_KEY = process.env.REACT_APP_API_KEY;
 
   useEffect(() => {
     const fetchWeatherData = async () => {
@@ -22,27 +22,35 @@ const Weather = () => {
     });
   }, [API_KEY]);
 
-  if (weatherData === null || !weatherData.main) {
-    return null;
-  }
-
-  return (
-    <div
-      style={{
-        backgroundColor: 'skyblue',
-        textAlign: 'center',
-        marginLeft: 500,
-        marginRight: 500,
-        padding: 100,
-      }}
-    >
-      <div>
-        <h2>{weatherData.name}</h2>
-        <p>Temperature: {Math.round(weatherData.main.temp)}°C</p>
-        <p>Description: {weatherData.weather[0]?.description}</p>
+  // if is not redundant its needed to make sure the page waits with the return until data is loaded. i had many white screens
+  if (
+    weatherData === null ||
+    !weatherData.name ||
+    !weatherData.main ||
+    !weatherData.weather ||
+    weatherData.weather.length === 0
+  ) {
+    return <div>Loading...</div>;
+  } else {
+    // Data has loaded and contains the expected properties, render the content.
+    return (
+      <div
+        style={{
+          backgroundColor: 'skyblue',
+          textAlign: 'center',
+          marginLeft: 500,
+          marginRight: 500,
+          padding: 100,
+        }}
+      >
+        <div>
+          <h2>{weatherData.name}</h2>
+          <p>Temperature: {Math.round(weatherData.main.temp)}°C</p>
+          <p>Description: {weatherData.weather[0].description}</p>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default Weather;
