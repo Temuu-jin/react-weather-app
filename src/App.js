@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 const Weather = () => {
   const [weatherData, setWeatherData] = useState({});
+  const [isLoading, setIsLoading] = useState(true); // Add a loading state
   const API_KEY = process.env.REACT_APP_API_KEY;
 
   useEffect(() => {
@@ -19,31 +20,22 @@ const Weather = () => {
         }
       } catch (error) {
         console.error('Error fetching weather data:', error);
+      } finally {
+        setIsLoading(false); // Set isLoading to false whether data is fetched successfully or not
       }
     };
 
     fetchData().catch((error) => {
       console.error('Error in fetchData: ', error);
+      setIsLoading(false); // Set isLoading to false in case of an error
     });
+  }, [API_KEY]);
 
-    // Check weatherData every 500 milliseconds until it's fully available
-    const checkDataInterval = setInterval(() => {
-      if (weatherData.main) {
-        clearInterval(checkDataInterval); // Stop the interval when data is available
-      }
-    }, 500);
-
-    // Clean up the interval when the component unmounts
-    return () => {
-      clearInterval(checkDataInterval);
-    };
-  }, [API_KEY, weatherData]); // Include weatherData in the dependency array to re-check when it changes
-
-  // Render the content when weatherData is available
-  if (!weatherData.main) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
+  // Render the content when weatherData is available
   return (
     <div
       style={{
@@ -56,8 +48,8 @@ const Weather = () => {
     >
       <div>
         <h2>{weatherData.name}</h2>
-        <p>Temperature: {Math.round(weatherData.main.temp)}°C</p>
-        <p>Description: {weatherData.weather[0].description}</p>
+        <p>Temperature: {Math.round(weatherData.main?.temp)}°C</p>
+        <p>Description: {weatherData.weather?.[0]?.description}</p>
       </div>
     </div>
   );
