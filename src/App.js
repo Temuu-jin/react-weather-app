@@ -25,13 +25,25 @@ const Weather = () => {
     fetchData().catch((error) => {
       console.error('Error in fetchData: ', error);
     });
-  }, [API_KEY]);
 
+    // Check weatherData every 500 milliseconds until it's fully available
+    const checkDataInterval = setInterval(() => {
+      if (weatherData.main) {
+        clearInterval(checkDataInterval); // Stop the interval when data is available
+      }
+    }, 500);
+
+    // Clean up the interval when the component unmounts
+    return () => {
+      clearInterval(checkDataInterval);
+    };
+  }, [API_KEY, weatherData]); // Include weatherData in the dependency array to re-check when it changes
+
+  // Render the content when weatherData is available
   if (!weatherData.main) {
     return <div>Loading...</div>;
   }
 
-  // Render the content without the unnecessary conditional
   return (
     <div
       style={{
