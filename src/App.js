@@ -40,9 +40,6 @@ const Weather = () => {
       style={{
         backgroundColor: 'skyblue',
         textAlign: 'center',
-        marginLeft: 500,
-        marginRight: 500,
-        padding: 100,
       }}
     >
       <div>
