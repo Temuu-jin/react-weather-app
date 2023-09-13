@@ -1,69 +1,58 @@
 import { useEffect, useState } from 'react';
+import styles from './styles.module.scss';
+
+const cities = ['Vienna', 'London', 'Berlin', 'Tokyo'];
+const API_KEY = process.env.REACT_APP_API_KEY;
 
 const Weather = () => {
   const [weatherData, setWeatherData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const API_KEY = process.env.REACT_APP_API_KEY;
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (cityName) => {
       try {
         const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?q=Vienna&appid=${API_KEY}&units=metric`,
+          `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`,
         );
 
         if (response.ok) {
           const data = await response.json();
-          setWeatherData(data);
+          setWeatherData((prevData) => ({ ...prevData, [cityName]: data }));
         } else {
-          console.log('Error fetching weather data:', response.status);
+          console.log(
+            `Error fetching weather data for ${cityName}:`,
+            response.status,
+          );
         }
       } catch (error) {
-        console.error('Error fetching weather data:', error);
-      } finally {
-        setIsLoading(false);
+        console.error(`Error fetching weather data for ${cityName}:`, error);
       }
     };
 
-    fetchData().catch((error) => {
-      console.error('Error in fetchData: ', error);
+    const fetchDataForAllCities = async () => {
+      setIsLoading(true);
+      for (const city of cities) {
+        await fetchData(city);
+      }
       setIsLoading(false);
-    });
-  }, [API_KEY]);
+    };
+
+    fetchDataForAllCities();
+  }, []);
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div
-      style={{
-        backgroundColor: 'skyblue',
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        padding: '5%',
-        flex: '1',
-      }}
-    >
-      <div
-        style={{
-          justifyContent: 'center',
-          flex: '1',
-        }}
-      >
-        <h2>{weatherData.name}</h2>
-      </div>
-      <div
-        style={{
-          justifyContent: 'center',
-          flex: '1',
-        }}
-      >
-        <p>Temperature: {Math.round(weatherData.main.temp)}°C</p>
-        <p>Description: {weatherData.weather[0].description}</p>
-      </div>
+    <div className={styles.body}>
+      {cities.map((cityName) => (
+        <div key={cityName} className={styles.weather}>
+          <h2>{cityName}</h2>
+          <p>Temperature: {Math.round(weatherData[cityName]?.main?.temp)}°C</p>
+          <p>Description: {weatherData[cityName]?.weather?.[0]?.description}</p>
+        </div>
+      ))}
     </div>
   );
 };
