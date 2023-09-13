@@ -31,13 +31,16 @@ const Weather = () => {
 
     const fetchDataForAllCities = async () => {
       setIsLoading(true);
-      for (const city of cities) {
-        await fetchData(city);
+      try {
+        for (const city of cities) {
+          await fetchData(city);
+        }
+      } catch (error) {
+        console.error('Error fetching weather data:', error);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
-
-    fetchDataForAllCities();
   }, []);
 
   if (isLoading) {
@@ -47,7 +50,7 @@ const Weather = () => {
   return (
     <div className={styles.body}>
       {cities.map((cityName) => (
-        <div key={cityName} className={styles.weather}>
+        <div key={`city-${cityName}`} className={styles.weather}>
           <h2>{cityName}</h2>
           <p>Temperature: {Math.round(weatherData[cityName]?.main?.temp)}°C</p>
           <p>Description: {weatherData[cityName]?.weather?.[0]?.description}</p>
