@@ -39,11 +39,28 @@ const Weather = () => {
     <div
       style={{
         backgroundColor: 'skyblue',
-        textAlign: 'center',
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        padding: '5%',
+        flex: '1',
       }}
     >
-      <div>
+      <div
+        style={{
+          justifyContent: 'center',
+          flex: '1',
+        }}
+      >
         <h2>{weatherData.name}</h2>
+      </div>
+      <div
+        style={{
+          justifyContent: 'center',
+          flex: '1',
+        }}
+      >
         <p>Temperature: {Math.round(weatherData.main.temp)}°C</p>
         <p>Description: {weatherData.weather[0].description}</p>
       </div>
